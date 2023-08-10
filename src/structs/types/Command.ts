@@ -1,3 +1,4 @@
+import { config } from "../..";
 import { ExtendedClient } from "../ExtendedClient";
 import {
   ButtonInteraction,
@@ -7,19 +8,18 @@ import {
   Collection,
   CommandInteraction,
   CommandInteractionOptionResolver,
+  AutocompleteInteraction,
 } from "discord.js";
 
 interface CommandProps {
   client: ExtendedClient;
   interaction: CommandInteraction;
   options: CommandInteractionOptionResolver;
+  config: typeof config;
 }
 
 export type ComponentsButton = Collection<string, (interaction: ButtonInteraction) => any>;
-export type ComponentsSelect = Collection<
-  string,
-  (interaction: StringSelectMenuInteraction) => any
->;
+export type ComponentsSelect = Collection<string, (interaction: StringSelectMenuInteraction) => any>;
 export type ComponentsModal = Collection<string, (interaction: ModalSubmitInteraction) => any>;
 
 interface CommandComponents {
@@ -29,7 +29,7 @@ interface CommandComponents {
 }
 
 export type CommandType = ApplicationCommandData &
-  CommandComponents & { run(props: CommandProps): any };
+  CommandComponents & { run(props: CommandProps): any; autoComplete?: (interaction: AutocompleteInteraction) => any };
 
 export class Command {
   constructor(options: CommandType) {

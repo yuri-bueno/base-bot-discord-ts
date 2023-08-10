@@ -9,5 +9,5 @@ client.start();
 export { client, config };
 
 client.on("ready", () => {
-  console.log("online");
+  // console.log("online");
 });

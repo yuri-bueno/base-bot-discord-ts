@@ -7,6 +7,8 @@ import {
   Collection,
   ApplicationCommandDataResolvable,
   ClientEvents,
+  REST,
+  Routes,
 } from "discord.js";
 
 import fs from "fs";
@@ -14,6 +16,7 @@ import path from "path";
 import dotenv from "dotenv";
 import { CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
 import { EventType } from "./types/Events";
+import { client, config } from "..";
 dotenv.config();
 
 const fileCondition = (fileName: string) => fileName.endsWith(".ts") || fileName.endsWith(".js");
@@ -78,7 +81,25 @@ export class ExtendedClient extends Client {
         });
     });
 
-    this.on("ready", () => this.registerCommands(SlashCommands));
+    this.on("ready", async () => {
+      this.registerCommands(SlashCommands);
+
+      client.guilds.cache.forEach((guild) => guild.commands.set(SlashCommands));
+
+      if (!client.user?.id) return;
+      if (!process.env.BOT_TOKEN) return;
+
+      if (config.isDeploy) {
+        const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
+
+        await rest
+          .put(Routes.applicationCommands(client.user.id), {
+            body: SlashCommands,
+          })
+          .then(() => console.log("[UPDATE]".green, `Comandos de Barra registrados globalmente!`))
+          .catch((e) => console.log(e));
+      }
+    });
   }
   private RegisterEvents() {
     const eventsPath = path.join(__dirname, "..", "events");

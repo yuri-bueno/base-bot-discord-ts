@@ -2,7 +2,7 @@ import { ClientEvents } from "discord.js";
 
 export type EventType<key extends keyof ClientEvents> = {
   name: key;
-  once: boolean;
+  once?: boolean;
   run(...args: ClientEvents[key]): any;
 };
 
