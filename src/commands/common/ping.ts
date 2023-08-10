@@ -18,19 +18,44 @@ export default new Command({
       required: true,
       description: "escolha uma cor",
       type: ApplicationCommandOptionType.String,
-      choices: [{ name: "red", value: "vermelho" }],
+      //   choices: [{ name: "red", value: "vermelho" }],
+      autocomplete: true,
     },
   ],
-  run({ client, interaction, options, config }) {
-    let color = options.getString("cor");
+  async autoComplete(interaction) {
+    const focused = interaction.options.getFocused(true);
 
-    if (!color) return;
+    let colors = [
+      { name: "vermelho", value: "red" },
+      { name: "azul", value: "blue" },
+      { name: "verde", value: "green" },
+      { name: "amarelo", value: "yellow" },
+      { name: "roxo", value: "purple" },
+      { name: "laranja", value: "orange" },
+      { name: "rosa", value: "pink" },
+      { name: "preto", value: "black" },
+      { name: "branco", value: "white" },
+      { name: "cinza", value: "gray" },
+    ];
+
+    const dono = interaction.user.id == "198467016796012544";
+
+    if (!dono) {
+      colors = [{ name: "sem acesso", value: "null" }];
+    }
+
+    const filtered = colors.filter((color) => color.name.toLowerCase().includes(focused.value.toLowerCase()));
+
+    interaction.respond(filtered.slice(0, 25));
+  },
+  run({ client, interaction, options, config }) {
+    let color = options.getString("cor", true);
 
     const button1 = new ButtonBuilder({ custom_id: "atualizar", label: "clica aqui", style: ButtonStyle.Success });
 
     const row = new ActionRowBuilder<ButtonBuilder>({ components: [button1] });
 
-    interaction.reply({ ephemeral: false, content: color.toString(), components: [row] });
+    interaction.reply({ ephemeral: false, content: client.ws.ping + color.toString(), components: [row] });
   },
   buttons: new Collection([
     [
