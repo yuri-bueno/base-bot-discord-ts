@@ -29,7 +29,11 @@ interface CommandComponents {
 }
 
 export type CommandType = ApplicationCommandData &
-  CommandComponents & { run(props: CommandProps): any; autoComplete?: (interaction: AutocompleteInteraction) => any };
+  CommandComponents & {
+    run(props: CommandProps): any;
+    autoComplete?: (interaction: AutocompleteInteraction) => any;
+    guild_ids?: string[];
+  };
 
 export class Command {
   constructor(options: CommandType) {

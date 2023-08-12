@@ -17,6 +17,7 @@ import dotenv from "dotenv";
 import { CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
 import { EventType } from "./types/Events";
 import { client, config } from "..";
+import AnimationLoading from "../assets/loading";
 dotenv.config();
 
 const fileCondition = (fileName: string) => fileName.endsWith(".ts") || fileName.endsWith(".js");
@@ -72,6 +73,10 @@ export class ExtendedClient extends Client {
 
           if (name) {
             this.commands.set(name, command);
+
+            //TODO VER ESSE GUILDS
+            if (config.guild.only) command.guild_ids = config.guild.id;
+
             SlashCommands.push(command);
 
             if (buttons) buttons.forEach((run, key) => this.buttons.set(key, run));
@@ -82,23 +87,33 @@ export class ExtendedClient extends Client {
     });
 
     this.on("ready", async () => {
-      this.registerCommands(SlashCommands);
-
-      client.guilds.cache.forEach((guild) => guild.commands.set(SlashCommands));
+      if (!config.isDeploy) return this.registerCommands(SlashCommands); // TODO LEMBRAR DE ATIVAR ISSO
 
       if (!client.user?.id) return;
       if (!process.env.BOT_TOKEN) return;
 
-      if (config.isDeploy) {
-        const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
+      const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
 
-        await rest
-          .put(Routes.applicationCommands(client.user.id), {
-            body: SlashCommands,
-          })
-          .then(() => console.log("[UPDATE]".green, `Comandos de Barra registrados globalmente!`))
-          .catch((e) => console.log(e));
-      }
+      const animator = new AnimationLoading();
+      animator.startAnimation("deletando...");
+      await rest
+        .put(Routes.applicationCommands(client.user.id), { body: [] })
+        .then(() => {
+          animator.stopAnimation();
+          console.log("[UPDATE]".green, "Todos os comandos excluídos com sucesso!");
+        })
+        .catch(console.error);
+
+      animator.startAnimation("atualizando...");
+      await rest
+        .put(Routes.applicationCommands(client.user.id), {
+          body: SlashCommands,
+        })
+        .then(() => {
+          animator.stopAnimation();
+          console.log("[UPDATE]".green, `Comandos de Barra registrados!`);
+        })
+        .catch((e) => console.log(e));
     });
   }
   private RegisterEvents() {
@@ -108,7 +123,8 @@ export class ExtendedClient extends Client {
       fs.readdirSync(`${eventsPath}/${local}`)
         .filter(fileCondition)
         .forEach(async (fileName) => {
-          const { name, once, run }: EventType<keyof ClientEvents> = (await import(`../events/${local}/${fileName}`))?.default;
+          const { name, once, run }: EventType<keyof ClientEvents> = (await import(`../events/${local}/${fileName}`))
+            ?.default;
 
           try {
             if (name) once ? this.once(name, run) : this.on(name, run);

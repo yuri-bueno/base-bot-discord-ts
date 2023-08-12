@@ -7,7 +7,7 @@
     "build": "tsc",
     "start": "tsc && node .",
     "dev": "ts-node src/index.ts",
-    "watch": "nodemon --exec ts-node src/index.ts"
+    "watch": " nodemon --exec ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
@@ -19,9 +19,11 @@
   },
   "dependencies": {
     "@types/colors": "^1.2.1",
+    "better-sqlite3": "^8.5.0",
     "colors": "^1.4.0",
     "discord.js": "^14.12.1",
     "dotenv": "^16.3.1",
+    "quick.db": "^9.1.7",
     "ts-lib": "^0.0.5"
   }
 }

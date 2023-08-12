@@ -25,28 +25,30 @@ export default new Command({
   async autoComplete(interaction) {
     const focused = interaction.options.getFocused(true);
 
-    let colors = [
-      { name: "vermelho", value: "red" },
-      { name: "azul", value: "blue" },
-      { name: "verde", value: "green" },
-      { name: "amarelo", value: "yellow" },
-      { name: "roxo", value: "purple" },
-      { name: "laranja", value: "orange" },
-      { name: "rosa", value: "pink" },
-      { name: "preto", value: "black" },
-      { name: "branco", value: "white" },
-      { name: "cinza", value: "gray" },
-    ];
+    if (focused.name) {
+      let colors = [
+        { name: "vermelho", value: "red" },
+        { name: "azul", value: "blue" },
+        { name: "verde", value: "green" },
+        { name: "amarelo", value: "yellow" },
+        { name: "roxo", value: "purple" },
+        { name: "laranja", value: "orange" },
+        { name: "rosa", value: "pink" },
+        { name: "preto", value: "black" },
+        { name: "branco", value: "white" },
+        { name: "cinza", value: "gray" },
+      ];
 
-    const dono = interaction.user.id == "198467016796012544";
+      const dono = interaction.user.id == "1298467016796012544";
 
-    if (!dono) {
-      colors = [{ name: "sem acesso", value: "null" }];
+      if (!dono) {
+        colors = [{ name: "sem acesso", value: "null" }];
+      }
+
+      const filtered = colors.filter((color) => color.name.toLowerCase().includes(focused.value.toLowerCase()));
+
+      interaction.respond(filtered.slice(0, 25));
     }
-
-    const filtered = colors.filter((color) => color.name.toLowerCase().includes(focused.value.toLowerCase()));
-
-    interaction.respond(filtered.slice(0, 25));
   },
   run({ client, interaction, options, config }) {
     let color = options.getString("cor", true);
