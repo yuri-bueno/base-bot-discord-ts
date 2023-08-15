@@ -19,8 +19,8 @@ export default class AnimationLoading {
       "⠇".blue,
       "⠏".red,
     ];
+
     let frameIndex = 0;
-    let color = "blue";
 
     // Intervalo para trocar o frame do spinner
     this.interval = setInterval(() => {

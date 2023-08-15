@@ -17,7 +17,7 @@ import dotenv from "dotenv";
 import { CommandType, ComponentsButton, ComponentsModal, ComponentsSelect } from "./types/Command";
 import { EventType } from "./types/Events";
 import { client, config } from "..";
-import AnimationLoading from "../assets/loading";
+import AnimationLoading from "../util/loading";
 dotenv.config();
 
 const fileCondition = (fileName: string) => fileName.endsWith(".ts") || fileName.endsWith(".js");
@@ -95,12 +95,12 @@ export class ExtendedClient extends Client {
       const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
 
       const animator = new AnimationLoading();
-      animator.startAnimation("deletando...");
+      animator.startAnimation("Deletando...");
       await rest
         .put(Routes.applicationCommands(client.user.id), { body: [] })
         .then(() => {
           animator.stopAnimation();
-          console.log("[UPDATE]".green, "Todos os comandos excluídos com sucesso!");
+          console.log("[UPDATE]".green, "Comandos de barra excluídos com sucesso!");
         })
         .catch(console.error);
 
@@ -111,7 +111,7 @@ export class ExtendedClient extends Client {
         })
         .then(() => {
           animator.stopAnimation();
-          console.log("[UPDATE]".green, `Comandos de Barra registrados!`);
+          console.log("[UPDATE]".green, `Comandos de barra registrados com sucesso!`);
         })
         .catch((e) => console.log(e));
     });
