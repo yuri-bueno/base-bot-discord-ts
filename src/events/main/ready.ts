@@ -6,7 +6,7 @@ export default new Event({
   once: true,
   run() {
     const { commands, buttons, selects, modals, user } = client;
-    process.stdout.write("\x1Bc");
+    //  process.stdout.write("\x1Bc");
     console.log(`Bot ${`${user?.username}`.bold} online`.green);
     console.log(`Commands loaded: ${commands.size}`.cyan);
     console.log(`Buttons loaded: ${buttons.size}`.cyan);

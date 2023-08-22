@@ -2,7 +2,7 @@
   "isDeploy": true,
   "lowdb": true,
   "MySQL": false,
-  "mongoDB": false,
+  "mongoDB": true,
   "guild": { "only": true, "id": ["1027007301472755812"] },
   "colors": { "red": "#FFF", "green": "#fff" }
 }

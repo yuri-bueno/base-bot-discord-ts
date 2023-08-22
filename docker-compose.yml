@@ -2,14 +2,14 @@ version: "3" # Ou outra versão do Docker Compose
 
 services:
   mariadb:
-    image: mariadb:latest
+    image: mysql:latest
     restart: always
     ports:
       - 3306:3306
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: my_database
-      MYSQL_USER: my_user
+      MYSQL_DATABASE: sql_bot_discord
+      MYSQL_USER: discord_bot
       MYSQL_PASSWORD: my_password
 
   mongo:
